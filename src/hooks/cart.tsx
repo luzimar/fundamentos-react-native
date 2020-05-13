@@ -35,6 +35,15 @@ function incrementState(oldState: Product[], id: string): Product[] {
   });
 }
 
+function decrementState(oldState: Product[], id: string): Product[] {
+  return oldState.map(product => {
+    if (product.id === id && product.quantity > 1) {
+      return { ...product, quantity: product.quantity - 1 };
+    }
+    return product;
+  });
+}
+
 const CartProvider: React.FC = ({ children }) => {
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -67,15 +76,7 @@ const CartProvider: React.FC = ({ children }) => {
   }, []);
 
   const decrement = useCallback(async id => {
-    setProducts(oldState => {
-      return oldState.map(product => {
-        if (product.id === id && product.quantity > 1) {
-          return { ...product, quantity: product.quantity - 1 };
-        }
-
-        return product;
-      });
-    });
+    setProducts(oldState => decrementState(oldState, id));
   }, []);
 
   useEffect(() => {
